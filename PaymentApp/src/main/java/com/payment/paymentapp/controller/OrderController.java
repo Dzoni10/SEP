@@ -1,7 +1,6 @@
 package com.payment.paymentapp.controller;
 
 import com.payment.paymentapp.domain.Order;
-import com.payment.paymentapp.domain.OrderItem;
 import com.payment.paymentapp.domain.OrderStatus;
 import com.payment.paymentapp.dto.CartItem;
 import com.payment.paymentapp.repositoryInterfaces.OrderItemRepository;
@@ -13,7 +12,6 @@ import com.payment.paymentapp.shared.PaymentResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.List;
 import java.util.Map;
 

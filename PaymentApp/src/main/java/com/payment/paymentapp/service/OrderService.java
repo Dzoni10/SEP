@@ -8,7 +8,6 @@ import com.payment.paymentapp.repositoryInterfaces.OrderItemRepository;
 import com.payment.paymentapp.repositoryInterfaces.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -20,7 +19,6 @@ public class OrderService {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
     }
-
     /**
      * Kreiraj order sa stavkama
      */
@@ -63,13 +61,10 @@ public class OrderService {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found: " + orderId));
     }
-
     /**
      * Preuzmi sve ordere
      */
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
-
-
 }

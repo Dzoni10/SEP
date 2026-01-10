@@ -2,7 +2,6 @@ package com.payment.paymentapp.controller;
 
 
 import com.payment.paymentapp.domain.Car;
-import com.payment.paymentapp.repositoryInterfaces.CarRepositoryInterface;
 import com.payment.paymentapp.service.CarService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
