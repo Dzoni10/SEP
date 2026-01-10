@@ -11,18 +11,13 @@ import com.payment.paymentapp.mapper.UserDTOMapper;
 import com.payment.paymentapp.service.EmailService;
 import com.payment.paymentapp.service.UserService;
 import com.payment.paymentapp.service.VerificationTokenService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -46,11 +41,9 @@ public class UserController {
     @Autowired
     private UserDTOMapper userDTOMapper;
 
-
     @PostMapping(value="/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody UserDTO userRegistrationDTO, HttpServletRequest request)
+    public ResponseEntity<?> signup(@Valid @RequestBody UserDTO userRegistrationDTO)
     {
-
         if(userService.isEmailExist(userRegistrationDTO.email)) {
             return new ResponseEntity<>("Email exits", HttpStatus.BAD_REQUEST);
         }
@@ -64,6 +57,7 @@ public class UserController {
         String hash = encoder.encode(userRegistrationDTO.password);
         savedUser.setPassword(hash);
         savedUser.setVerified(false);
+
         UserDTO userDTO = new UserDTO(savedUser);
         System.out.println(userDTO.name + userDTO.email);
         try{
@@ -87,9 +81,7 @@ public class UserController {
     }
 
     @PostMapping(value="/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LogInRequest logInRequest, HttpServletRequest request){
-        String ipAddress = getClientIpAddress(request);
-        String userAgent = request.getHeader("User-Agent");
+    public ResponseEntity<?> login(@Valid @RequestBody LogInRequest logInRequest){
 
         User user = userService.findByEmail(logInRequest.getEmail());
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -97,11 +89,9 @@ public class UserController {
         if(user==null) {
             return new ResponseEntity<>("Unsuccessful login - user doesn't exist",HttpStatus.NOT_FOUND);
         }
-
         if (!encoder.matches(logInRequest.getPassword(), user.getPassword())) {
             return new ResponseEntity<>("Unsuccessful login - wrong password", HttpStatus.UNAUTHORIZED);
         }
-
         if (!user.isVerified()) {
             return new ResponseEntity<>("Unsuccessful login - mail not verified", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -110,11 +100,28 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    private String getClientIpAddress(HttpServletRequest request) {
-        String ipAddress = request.getHeader("X-Forwarded-For");
-        if (ipAddress == null || ipAddress.isEmpty()) {
-            ipAddress = request.getRemoteAddr();
+    @GetMapping(value="/verify")
+    public ResponseEntity<String> verifyUser(@RequestParam("token") String token){
+        VerificationToken verificationToken = verificationTokenService.findByToken(token);
+
+        if (verificationToken == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid token");
         }
-        return ipAddress;
+        if (verificationToken.isUsed()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token already used");
+        }
+        if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token expired");
+        }
+        User user = verificationToken.getUser();
+
+        if(user == null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found");
+        }
+                user.setVerified(true);
+                userService.save(user);
+                verificationToken.setUsed(true);
+                verificationTokenService.save(verificationToken);
+                return ResponseEntity.ok("Account successfully verified");
     }
 }
