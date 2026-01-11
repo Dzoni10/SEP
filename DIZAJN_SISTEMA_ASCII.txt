@@ -1,0 +1,119 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    DIZAJN SISTEMA - PAYMENT SERVICE PROVIDER                 ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              CAR SHOP                                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│  ┌──────────────────┐         ┌──────────────────┐         ┌──────────────┐ │
+│  │ Car Shop         │◄───────►│ Car Shop         │◄───────►│ Car Shop DB  │ │
+│  │ Frontend         │         │ Backend          │         │ PostgreSQL   │ │
+│  │ (Angular)        │         │ (Spring Boot)    │         │              │ │
+│  └──────────────────┘         └──────────────────┘         └──────────────┘ │
+│                                                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ REST API (HTTPS)
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    PAYMENT SERVICE PROVIDER (PSP)                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│  ┌──────────────────┐         ┌──────────────────┐         ┌──────────────┐ │
+│  │ PSP Frontend      │◄───────►│ PSP Backend       │◄───────►│ PSP DB       │ │
+│  │ (Angular/React)   │         │ (Spring Boot)    │         │ PostgreSQL   │ │
+│  │                   │         │                  │         │              │ │
+│  │ - Components      │         │ - Services       │         │              │ │
+│  │ - Services        │         │ - Controllers    │         │              │ │
+│  │                   │         │ - Plugins        │         │              │ │
+│  │                   │         │ - Repositories    │         │              │ │
+│  │                   │         │ - Domain          │         │              │ │
+│  │                   │         │ - Security       │         │              │ │
+│  │                   │         │ - Subscription  │         │              │ │
+│  │                   │         │ - Merchant       │         │              │ │
+│  └──────────────────┘         └──────────────────┘         └──────────────┘ │
+│                                                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    │ REST API (HTTPS/gRPCs)
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         FINANCIAL SYSTEM                                     │
+│                      (Acquirer Bank)                                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│  ┌──────────────────┐         ┌──────────────┐                              │
+│  │ Financial Back    │◄───────►│ Financial DB │                              │
+│  │ (Spring Boot)     │         │ PostgreSQL   │                              │
+│  │                   │         │              │                              │
+│  │ - Services        │         │              │                              │
+│  │ - Controllers     │         │              │                              │
+│  │ - Repositories    │         │              │                              │
+│  │ - Security        │         │              │                              │
+│  │ - Domain          │         │              │                              │
+│  └──────────────────┘         └──────────────┘                              │
+│                                                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                                    ▲
+                                    │
+                                    │ API Calls (HTTPS)
+                                    │
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         PAYMENT PROVIDERS                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                               │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
+│  │ PayPal API   │  │ Crypto API   │  │ Card         │  │ QR Code       │  │
+│  │              │  │ (Bitcoin)    │  │ Processing   │  │ (IPS NBS)     │  │
+│  └──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘  │
+│                                                                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+
+KOMUNIKACIJA:
+
+1. Car Shop Backend ◄──────► PSP Backend
+   └─ REST API (HTTPS)
+   └─ Pretplata, inicijalizacija plaćanja, callback
+
+2. PSP Backend ◄──────► Financial Back
+   └─ REST API (HTTPS/gRPCs)
+   └─ Zahtev za PAYMENT_URL, validacija kartice, rezervacija sredstava
+
+3. PSP Backend ──────► Payment Providers
+   └─ API Calls (HTTPS)
+   └─ PayPal API, Crypto API, Card Processing, QR Code generation
+
+4. PSP Backend ──────► Car Shop Backend (Callback)
+   └─ Webhook/Callback
+   └─ Status transakcije
+
+5. PSP Frontend ──────► PayPal (Redirect)
+   └─ Preusmeravanje korisnika na PayPal sajt
+
+═══════════════════════════════════════════════════════════════════════════════
+
+TOKOVI PLAĆANJA:
+
+KARTIČNO PLAĆANJE:
+  Car Shop Frontend → Car Shop Backend → PSP Backend → Financial Back
+  → PSP Frontend (forma) → PSP Backend → Financial Back → PSP Backend
+  → Car Shop Backend (callback)
+
+QR PLAĆANJE:
+  Car Shop Backend → PSP Backend (generiše QR) → PSP Frontend (prikazuje)
+  → Korisnik (skenira) → mBanking → Financial Back → PSP Backend
+  → Car Shop Backend (callback)
+
+PAYPAL PLAĆANJE:
+  Car Shop Backend → PSP Backend → PSP Frontend (redirect) → PayPal
+  → PayPal (callback) → PSP Backend → Car Shop Backend (callback)
+
+CRYPTO PLAĆANJE:
+  Car Shop Backend → PSP Backend (generiše adresu) → PSP Frontend (prikazuje)
+  → Korisnik (šalje) → Crypto API → PSP Backend → Car Shop Backend (callback)
