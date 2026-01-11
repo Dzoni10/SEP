@@ -18,10 +18,14 @@ public class PaymentTransaction {
     private LocalDateTime acquirerTimestamp;
     private String callbackUrl;
     private Integer orderId;
+    private String successUrl;
+    private String failedUrl;
+    private String errorUrl;
 
     public PaymentTransaction(String paymentId, String merchantId, double amount, 
                              String currency, String stan, LocalDateTime pspTimestamp,
-                             String status, String callbackUrl, Integer orderId) {
+                             String status, String callbackUrl, Integer orderId,
+                             String successUrl, String failedUrl, String errorUrl) {
         this.paymentId = paymentId;
         this.merchantId = merchantId;
         this.amount = amount;
@@ -31,6 +35,9 @@ public class PaymentTransaction {
         this.status = status;
         this.callbackUrl = callbackUrl;
         this.orderId = orderId;
+        this.successUrl = successUrl;
+        this.failedUrl = failedUrl;
+        this.errorUrl = errorUrl;
     }
 
     // Getters and Setters
@@ -66,4 +73,13 @@ public class PaymentTransaction {
     
     public Integer getOrderId() { return orderId; }
     public void setOrderId(Integer orderId) { this.orderId = orderId; }
+    
+    public String getSuccessUrl() { return successUrl; }
+    public void setSuccessUrl(String successUrl) { this.successUrl = successUrl; }
+    
+    public String getFailedUrl() { return failedUrl; }
+    public void setFailedUrl(String failedUrl) { this.failedUrl = failedUrl; }
+    
+    public String getErrorUrl() { return errorUrl; }
+    public void setErrorUrl(String errorUrl) { this.errorUrl = errorUrl; }
 }

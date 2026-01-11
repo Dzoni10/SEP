@@ -33,8 +33,9 @@ public class BankService {
         // Generisanje PAYMENT_ID
         String paymentId = UUID.randomUUID().toString();
         
-        // Generisanje PAYMENT_URL
-        String paymentUrl = "http://localhost:8081/payment/" + paymentId;
+        // Generisanje PAYMENT_URL - frontend URL za formu kartice sa query params
+        String paymentUrl = String.format("http://localhost:4500/payment/card/%s?amount=%.2f&currency=%s",
+            paymentId, request.amount(), request.currency());
         
         // Čuvanje transakcije
         PaymentTransaction transaction = new PaymentTransaction(
@@ -46,7 +47,10 @@ public class BankService {
             request.pspTimestamp(),
             "PENDING", // status
             null,      // callbackUrl će se dodati kasnije od PSP-a
-            null       // orderId će se dodati kasnije od PSP-a
+            null,      // orderId će se dodati kasnije od PSP-a
+            null,      // successUrl će se dodati kasnije od PSP-a
+            null,      // failedUrl će se dodati kasnije od PSP-a
+            null       // errorUrl će se dodati kasnije od PSP-a
         );
         
         transactions.put(paymentId, transaction);
@@ -58,11 +62,15 @@ public class BankService {
      * Ažuriranje transakcije sa callbackUrl i orderId
      * PSP poziva ovu metodu nakon što dobije PAYMENT_URL
      */
-    public void updateTransactionWithCallback(String paymentId, String callbackUrl, Integer orderId) {
+    public void updateTransactionWithCallback(String paymentId, String callbackUrl, Integer orderId,
+                                               String successUrl, String failedUrl, String errorUrl) {
         PaymentTransaction transaction = transactions.get(paymentId);
         if (transaction != null) {
             transaction.setCallbackUrl(callbackUrl);
             transaction.setOrderId(orderId);
+            transaction.setSuccessUrl(successUrl);
+            transaction.setFailedUrl(failedUrl);
+            transaction.setErrorUrl(errorUrl);
         }
     }
 
@@ -78,6 +86,7 @@ public class BankService {
                 "Transaction not found",
                 null,
                 null,
+                null,
                 null
             );
         }
@@ -85,23 +94,29 @@ public class BankService {
         // Provera stanja računa (simulacija)
         Account account = findAccountByCardNumber(request.pan());
         if (account == null) {
+            String errorUrl = transaction.getErrorUrl() != null ?
+                transaction.getErrorUrl() + "?error=Account not found" : null;
             return new PaymentProcessResponse(
                 false,
                 "Account not found",
                 null,
                 null,
-                null
+                null,
+                errorUrl
             );
         }
         
         // Provera sredstava
         if (account.getBalance() < transaction.getAmount()) {
+            String failedUrl = transaction.getFailedUrl() != null ?
+                transaction.getFailedUrl() + "?error=Insufficient funds" : null;
             return new PaymentProcessResponse(
                 false,
                 "Insufficient funds",
                 null,
                 null,
-                null
+                null,
+                failedUrl
             );
         }
         
@@ -117,6 +132,11 @@ public class BankService {
         transaction.setStatus("SUCCESS");
         transaction.setGlobalTransactionId(globalTransactionId);
         transaction.setAcquirerTimestamp(acquirerTimestamp);
+        
+        // Vraćanje response sa redirect URL-ovima
+        String redirectUrl = transaction.getSuccessUrl() != null ? 
+            transaction.getSuccessUrl() + "?transactionId=" + globalTransactionId : 
+            null;
         
         // Automatski pozovi callback Web Shop-a ako postoji
         if (transaction.getCallbackUrl() != null) {
@@ -135,7 +155,8 @@ public class BankService {
             null,
             globalTransactionId,
             acquirerTimestamp,
-            transaction.getStan()
+            transaction.getStan(),
+            redirectUrl
         );
     }
 
@@ -189,6 +210,10 @@ public class BankService {
             .filter(t -> t.getStan().equals(stan))
             .findFirst()
             .orElse(null);
+    }
+
+    public PaymentTransaction getTransaction(String paymentId) {
+        return transactions.get(paymentId);
     }
 
     private void initializeTestAccounts() {

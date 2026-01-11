@@ -48,25 +48,33 @@ public class BankController {
         
         // 1. Validacija kartice (Lunova formula)
         if (!CardValidator.validateLuhn(request.pan())) {
+            PaymentTransaction transaction = bankService.getTransaction(request.paymentId());
+            String errorUrl = transaction != null && transaction.getErrorUrl() != null ?
+                transaction.getErrorUrl() + "?error=Invalid card number" : null;
             return ResponseEntity.badRequest()
                 .body(new PaymentProcessResponse(
                     false, 
                     "Invalid card number", 
                     null, 
                     null,
-                    null
+                    null,
+                    errorUrl
                 ));
         }
         
         // 2. Validacija datuma (MM/YY)
         if (!CardValidator.validateExpiryDate(request.expiryDate())) {
+            PaymentTransaction transaction = bankService.getTransaction(request.paymentId());
+            String errorUrl = transaction != null && transaction.getErrorUrl() != null ?
+                transaction.getErrorUrl() + "?error=Invalid expiry date" : null;
             return ResponseEntity.badRequest()
                 .body(new PaymentProcessResponse(
                     false, 
                     "Invalid expiry date", 
                     null, 
                     null,
-                    null
+                    null,
+                    errorUrl
                 ));
         }
         
@@ -92,7 +100,10 @@ public class BankController {
         bankService.updateTransactionWithCallback(
             paymentId, 
             request.callbackUrl(), 
-            request.orderId()
+            request.orderId(),
+            request.successUrl(),
+            request.failedUrl(),
+            request.errorUrl()
         );
         
         return ResponseEntity.ok().build();

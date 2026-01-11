@@ -40,12 +40,27 @@ public class PSPController {
             @PathVariable int webShopId,
             @RequestBody PaymentInitiationRequest request) {
         try {
+            // Ekstraktovanje SUCCESS_URL, FAILED_URL, ERROR_URL iz metadata ili direktno
+            // Za sada ćemo koristiti hardkodovane URL-ove, kasnije iz metadata
+            String successUrl = request.metadata() != null ? 
+                request.metadata().getOrDefault("successUrl", "http://localhost:4200/payment-success") : 
+                "http://localhost:4200/payment-success";
+            String failedUrl = request.metadata() != null ? 
+                request.metadata().getOrDefault("failedUrl", "http://localhost:4200/payment-failed") : 
+                "http://localhost:4200/payment-failed";
+            String errorUrl = request.metadata() != null ? 
+                request.metadata().getOrDefault("errorUrl", "http://localhost:4200/payment-error") : 
+                "http://localhost:4200/payment-error";
+            
             PaymentRequest paymentReq = new PaymentRequest(
                     webShopId,
                     request.orderId(),
                     request.amount(),
                     request.currency(),
                     request.callbackUrl(),
+                    successUrl,
+                    failedUrl,
+                    errorUrl,
                     request.metadata()
             );
 
