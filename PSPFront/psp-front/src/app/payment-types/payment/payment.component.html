@@ -1,0 +1,59 @@
+<div class="payment-container">
+  <h1 class="title">Choose payment method</h1>
+  
+  <div class="payment-grid">
+    <mat-card class="payment-card" (click)="selectPayment('card')">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>credit_card</mat-icon>
+        <mat-card-title>Card payment</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Security payment via Visa, Mastercard or Maestro cards.</p>
+      </mat-card-content>
+      <!-- <mat-card-actions>
+        <button mat-button color="primary">CHOOSE</button>
+      </mat-card-actions> -->
+    </mat-card>
+
+    <mat-card class="payment-card" (click)="selectPayment('qr')">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>qr_code_2</mat-icon>
+        <mat-card-title>QR code (IPS)</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Scan QR code with bank application for payment.</p>
+      </mat-card-content>
+      <!-- <mat-card-actions>
+        <button mat-raised color="primary">CHOOSE</button>
+      </mat-card-actions> -->
+    </mat-card>
+
+    <mat-card class="payment-card" (click)="selectPayment('crypto')">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>currency_bitcoin</mat-icon>
+        <mat-card-title>Crypto payment</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>We support Bitcoin, Ethereum and Solana payment.</p>
+      </mat-card-content>
+      <!-- <mat-card-actions>
+        <button mat-button color="primary">CHOOSE</button>
+      </mat-card-actions> -->
+    </mat-card>
+
+
+
+    <mat-card class="payment-card" (click)="selectPayment('paypall')">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>account_balance_wallet</mat-icon>
+        <mat-card-title>PayPal payment</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>We support PayPal payment.</p>
+      </mat-card-content>
+      <!-- <mat-card-actions>
+        <button mat-button color="primary">CHOOSE</button>
+      </mat-card-actions> -->
+    </mat-card>
+  </div>
+</div>

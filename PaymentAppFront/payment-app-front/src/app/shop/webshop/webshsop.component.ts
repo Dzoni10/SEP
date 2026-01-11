@@ -25,7 +25,9 @@ export class WebShopComponent implements OnInit {
 
   rent(carId: number){
     console.log('User', this.userId,'wants car',carId);
-    //bekend
+    const paymentUrl = `http://localhost:4300/payment?carId=${carId}&userId=${this.userId}`;
+    window.location.href = paymentUrl;
+    
   }
 
 
