@@ -77,18 +77,19 @@ public class CardPaymentPlugin implements PaymentPlugin {
                 throw new PaymentPluginException("Failed to get payment URL from bank");
             }
             
-            // 6. Ažuriranje transakcije u banci sa callbackUrl i orderId
-            if (request.callbackUrl() != null) {
-                UpdateCallbackRequest callbackRequest = new UpdateCallbackRequest(
-                    request.callbackUrl(),
-                    request.orderId()
-                );
-                
-                restTemplate.put(
-                    BANK_BASE_URL + "/payment/" + bankResponse.paymentId() + "/callback",
-                    callbackRequest
-                );
-            }
+            // 6. Ažuriranje transakcije u banci sa callbackUrl, orderId i redirect URL-ovima
+            UpdateCallbackRequest callbackRequest = new UpdateCallbackRequest(
+                request.callbackUrl(),
+                request.orderId(),
+                request.successUrl(),
+                request.failedUrl(),
+                request.errorUrl()
+            );
+            
+            restTemplate.put(
+                BANK_BASE_URL + "/payment/" + bankResponse.paymentId() + "/callback",
+                callbackRequest
+            );
             
             // 7. Vraćanje PAYMENT_URL korisniku
             return new PaymentResult(
