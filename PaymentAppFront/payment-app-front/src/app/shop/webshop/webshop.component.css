@@ -1,0 +1,38 @@
+.car-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 30px;
+}
+
+.car-card {
+  border-radius: 16px;
+  transition: .3s ease;
+}
+
+.car-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 40px rgba(0,0,0,.2);
+}
+
+.price {
+  color: #4caf50;
+  font-weight: bold;
+  margin-top: 12px;
+}
+
+.clickable-img {
+  cursor: pointer;
+  height: 200px; /* Fiksna visina da bi kartice bile iste */
+  object-fit: cover; /* Sprečava razvlačenje slike */
+  transition: opacity 0.3s;
+}
+
+.clickable-img:hover {
+  opacity: 0.8;
+}
+
+.image-container {
+  overflow: hidden;
+  border-radius: 16px 16px 0 0;
+}

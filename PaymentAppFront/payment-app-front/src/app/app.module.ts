@@ -10,6 +10,8 @@ import { RouterModule } from '@angular/router';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthModule } from './auth/auth.module';
 import { AuthInterceptor } from './auth/interceptor-jwt/jwt-interceptor';
+import { ShopModule } from './shop/shop.module';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { AuthInterceptor } from './auth/interceptor-jwt/jwt-interceptor';
     CommonModule,
     RouterModule,
     HttpClientModule,
-    AuthModule
+    AuthModule,
+    ShopModule,
+    MatDialogModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi:true}
