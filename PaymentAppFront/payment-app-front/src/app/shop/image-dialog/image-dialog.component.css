@@ -1,0 +1,16 @@
+.dialog-container { 
+    position: relative; 
+    display: flex; 
+    justify-content: center; 
+}
+.full-image { 
+    max-width: 100vw; 
+    max-height: 80vh; 
+    border-radius: 8px; 
+}
+.close-button { 
+position: absolute; 
+top: -40px; 
+right: 0; color: 
+white; 
+}

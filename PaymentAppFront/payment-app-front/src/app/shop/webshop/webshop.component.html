@@ -1,0 +1,25 @@
+<div class="car-grid">
+  <mat-card class="car-card" *ngFor="let car of cars">
+
+    <div class="image-container">
+      <img mat-card-image [src]="car.picture" (click)="openImage(car.picture)" class="clickable-img" alt="Car image" />
+    </div>
+
+    <mat-card-content>
+      <h2>{{ car.mark }}</h2>
+
+      <p>🚪  Doors: {{ car.doorNumber }}</p>
+      <p>⚙  Engine: {{ car.engineSize }} cc</p>
+      <p>🚗 Type: {{ car.type }}</p>
+      <p>📅 Year: {{car.year}}</p>
+      <h3 class="price">{{ car.rentPrice }} € / day</h3>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button mat-raised-button color="primary" (click)="rent(car.id)">
+        Rent
+      </button>
+    </mat-card-actions>
+
+  </mat-card>
+</div>
