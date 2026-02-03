@@ -5,17 +5,17 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="transaction")
+@Table(name="transaction", uniqueConstraints = @UniqueConstraint(columnNames = {"webShopId", "orderId"}))
 public class Transaction{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true,nullable = false)
+    @Column(nullable = false)
     private int webShopId;
 
-    @Column(unique = true,nullable = false)
+    @Column(nullable = false)
     private int orderId;
 
     @Column(nullable = false)
@@ -36,10 +36,10 @@ public class Transaction{
     @Column(nullable = false)
     private LocalDate createdAt;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate completedAt;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String errorMessage;
 
     public Transaction() {}

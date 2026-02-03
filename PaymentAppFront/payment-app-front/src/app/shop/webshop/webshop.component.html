@@ -16,8 +16,8 @@
     </mat-card-content>
 
     <mat-card-actions>
-      <button mat-raised-button color="primary" (click)="rent(car.id)">
-        Rent
+      <button mat-raised-button color="primary" (click)="rent(car)" [disabled]="loading">
+        {{ loading ? 'Processing...' : 'Rent' }}
       </button>
     </mat-card-actions>
 

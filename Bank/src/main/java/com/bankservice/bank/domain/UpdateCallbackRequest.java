@@ -1,8 +1,5 @@
-package com.payment.paymentserviceprovider.bank.domain;
+package com.bankservice.bank.domain;
 
-/**
- * Zahtev za ažuriranje transakcije sa callbackUrl, orderId i redirect URL-ovima
- */
 public record UpdateCallbackRequest(
     String callbackUrl,
     Integer orderId,

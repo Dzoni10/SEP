@@ -46,6 +46,9 @@ public class PaymentProcessingService {
         PaymentResult result = plugin.processPayment(paymentRequest);
 
         // 4. Čuvanje transakcije
+        // Za PENDING: completedAt = createdAt (ažurira se kad transakcija završi)
+        // Za FAILED: completedAt = sada
+        LocalDate now = LocalDate.now();
         Transaction transaction = new Transaction(
                 webShopId,
                 (int) paymentRequest.orderId(),
@@ -54,9 +57,9 @@ public class PaymentProcessingService {
                 paymentRequest.currency(),
                 result.success() ? TransactionStatus.PENDING : TransactionStatus.FAILED,
                 result.externalTransactionId(),
-                LocalDate.now(),
-                result.success() ? null : LocalDate.now(),
-                result.errorMessage()
+                now,
+                now,  // completedAt - za PENDING će se ažurirati pri callback-u
+                result.errorMessage() != null ? result.errorMessage() : ""
         );
 
         transactionRepository.save(transaction);

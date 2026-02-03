@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name="web_shpo_subscriptions")
+@Table(name="web_shop_subscriptions")
 
 public class WebShopSubscription {
 
@@ -18,7 +18,7 @@ public class WebShopSubscription {
     private Integer webShopId;
 
     @ElementCollection
-    @CollectionTable(name="subscription_methods,",joinColumns=@JoinColumn(name="subscription_id"))
+    @CollectionTable(name="subscription_methods", joinColumns=@JoinColumn(name="subscription_id"))
     private List<PaymentMethodType> subscribedMethods;
 
     @Column(nullable = false)

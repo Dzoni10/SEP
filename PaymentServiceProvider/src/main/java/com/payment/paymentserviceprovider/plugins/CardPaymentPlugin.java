@@ -2,9 +2,9 @@ package com.payment.paymentserviceprovider.plugins;
 
 import com.payment.paymentserviceprovider.domain.*;
 import com.payment.paymentserviceprovider.exception.PaymentPluginException;
-import com.payment.paymentserviceprovider.bank.domain.PaymentUrlRequest;
-import com.payment.paymentserviceprovider.bank.domain.PaymentUrlResponse;
-import com.payment.paymentserviceprovider.bank.domain.UpdateCallbackRequest;
+import com.payment.paymentserviceprovider.bank.client.PaymentUrlRequest;
+import com.payment.paymentserviceprovider.bank.client.PaymentUrlResponse;
+import com.payment.paymentserviceprovider.bank.client.UpdateCallbackRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,7 +17,7 @@ import java.util.UUID;
 public class CardPaymentPlugin implements PaymentPlugin {
 
     private final RestTemplate restTemplate;
-    private static final String BANK_BASE_URL = "http://localhost:8081/api/v1/bank";
+    private static final String BANK_BASE_URL = "http://localhost:8082/api/v1/bank";
 
     public CardPaymentPlugin(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;

@@ -1,7 +1,10 @@
 <div class="payment-container">
   <h1 class="title">Choose payment method</h1>
+  <p *ngIf="orderId && amount" class="order-info">Order #{{ orderId }} — {{ amount }} {{ currency }}</p>
   
-  <div class="payment-grid">
+  <div *ngIf="loading" class="loading">Redirecting to payment...</div>
+  
+  <div class="payment-grid" [class.disabled]="loading">
     <mat-card class="payment-card" (click)="selectPayment('card')">
       <mat-card-header>
         <mat-icon mat-card-avatar>credit_card</mat-icon>

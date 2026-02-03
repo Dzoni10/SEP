@@ -1,0 +1,79 @@
+<div class="payment-form-container">
+  <mat-card class="payment-card">
+    <mat-card-header>
+      <mat-card-title>Card Payment</mat-card-title>
+      <mat-card-subtitle>Enter your card details</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+        <div class="amount-display">
+          <h2>Amount: {{ amount }} {{ currency }}</h2>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Card Number</mat-label>
+          <input matInput 
+                 formControlName="pan" 
+                 placeholder="1234 5678 9012 3456"
+                 (input)="formatCardNumber($event)"
+                 maxlength="19">
+          <mat-icon matPrefix>credit_card</mat-icon>
+          <mat-error *ngIf="pan?.hasError('required')">Card number is required</mat-error>
+          <mat-error *ngIf="pan?.hasError('pattern')">Invalid card number format</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Cardholder Name</mat-label>
+          <input matInput 
+                 formControlName="cardHolderName" 
+                 placeholder="John Doe">
+          <mat-icon matPrefix>person</mat-icon>
+          <mat-error *ngIf="cardHolderName?.hasError('required')">Cardholder name is required</mat-error>
+          <mat-error *ngIf="cardHolderName?.hasError('minlength')">Name must be at least 3 characters</mat-error>
+        </mat-form-field>
+
+        <div class="row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Expiry Date</mat-label>
+            <input matInput 
+                   formControlName="expiryDate" 
+                   placeholder="MM/YY"
+                   (input)="formatExpiryDate($event)"
+                   maxlength="5">
+            <mat-icon matPrefix>calendar_today</mat-icon>
+            <mat-error *ngIf="expiryDate?.hasError('required')">Expiry date is required</mat-error>
+            <mat-error *ngIf="expiryDate?.hasError('pattern')">Format: MM/YY</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>CVV</mat-label>
+            <input matInput 
+                   formControlName="securityCode" 
+                   placeholder="123"
+                   type="password"
+                   maxlength="4">
+            <mat-icon matPrefix>lock</mat-icon>
+            <mat-error *ngIf="securityCode?.hasError('required')">CVV is required</mat-error>
+            <mat-error *ngIf="securityCode?.hasError('pattern')">Invalid CVV</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="card-logos">
+          <img src="https://logos-world.net/wp-content/uploads/2020/04/Visa-Logo.png" alt="Visa" class="card-logo">
+          <img src="https://logos-world.net/wp-content/uploads/2020/04/Mastercard-Logo.png" alt="Mastercard" class="card-logo">
+          <img src="https://logos-world.net/wp-content/uploads/2020/04/Maestro-Logo.png" alt="Maestro" class="card-logo">
+        </div>
+
+        <button mat-raised-button 
+                color="primary" 
+                type="submit" 
+                class="submit-button"
+                [disabled]="paymentForm.invalid || loading">
+          <span *ngIf="!loading">Pay {{ amount }} {{ currency }}</span>
+          <span *ngIf="loading">Processing...</span>
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

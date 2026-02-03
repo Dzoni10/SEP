@@ -47,7 +47,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/v1/cars").hasRole("USER")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/cars/").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/cars/").hasRole("ADMIN")
-
+                        .requestMatchers(HttpMethod.POST, "/api/v1/orders/checkout").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/orders/*/payment-callback").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/orders/**").hasRole("USER")
 
                         // Sve ostalo traži auth
                         .anyRequest().authenticated()

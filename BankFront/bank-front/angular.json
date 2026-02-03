@@ -59,6 +59,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "port": 4400
+          },
           "configurations": {
             "production": {
               "browserTarget": "bank-front:build:production"
