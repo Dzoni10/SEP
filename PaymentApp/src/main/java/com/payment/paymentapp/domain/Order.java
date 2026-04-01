@@ -2,6 +2,7 @@ package com.payment.paymentapp.domain;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,22 +21,27 @@ public class Order {
     private OrderStatus status;
 
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<OrderItem> items;
+    private List<OrderItem> items = new ArrayList<>();
+
+    @Column(unique = true)
+    private String checkoutToken;
 
 
     public Order() {}
 
-    public Order(int id, double totalAmount,OrderStatus status, List<OrderItem> items) {
+    public Order(int id, double totalAmount,OrderStatus status, List<OrderItem> items,String checkoutToken) {
         this.id = id;
         this.totalAmount = totalAmount;
         this.status = status;
         this.items = items;
+        this.checkoutToken=checkoutToken;
     }
 
-    public Order( double totalAmount,OrderStatus status, List<OrderItem> items) {
+    public Order( double totalAmount,OrderStatus status, List<OrderItem> items,String checkoutToken) {
         this.totalAmount = totalAmount;
         this.status = status;
         this.items = items;
+        this.checkoutToken=checkoutToken;
     }
 
     public int getId() {
@@ -67,5 +73,12 @@ public class Order {
 
     public void setItems(List<OrderItem> items) {
         this.items = items;
+    }
+
+    public String getCheckoutToken() {
+        return checkoutToken;
+    }
+    public void setCheckoutToken(String checkoutToken) {
+        this.checkoutToken = checkoutToken;
     }
 }

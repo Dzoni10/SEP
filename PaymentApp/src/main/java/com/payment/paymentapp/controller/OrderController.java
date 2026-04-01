@@ -5,56 +5,81 @@ import com.payment.paymentapp.domain.OrderStatus;
 import com.payment.paymentapp.dto.CartItem;
 import com.payment.paymentapp.repositoryInterfaces.OrderItemRepository;
 import com.payment.paymentapp.repositoryInterfaces.OrderRepository;
+import com.payment.paymentapp.service.CarService;
 import com.payment.paymentapp.service.OrderService;
-import com.payment.paymentapp.shared.PaymentInitiationRequest;
 import com.payment.paymentapp.shared.PaymentMethodType;
 import com.payment.paymentapp.shared.PaymentResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController("/api/v1/orders")
+@RestController
+@RequestMapping("/api/v1/orders")
 public class OrderController {
 
     private final RestTemplate restTemplate;
-    private static final String PSP_BASE_URL = "http://localhost:8081/api/v1/psp";
+
+    @Value("${PSP_BASE_URL}")
+    private String PSP_BASE_URL;
     private final OrderItemRepository orderItemRepository;
     private static final int WEB_SHOP_ID=1;
     private final OrderRepository orderRepository;
     private final OrderService orderService;
+    private final CarService carService;
 
-    public OrderController(RestTemplate restTemplate, OrderItemRepository orderItemRepository, OrderRepository orderRepository,OrderService orderService) {
+    public OrderController(RestTemplate restTemplate, OrderItemRepository orderItemRepository, OrderRepository orderRepository,OrderService orderService,CarService carService) {
         this.restTemplate = restTemplate;
         this.orderItemRepository = orderItemRepository;
         this.orderRepository = orderRepository;
         this.orderService = orderService;
+        this.carService = carService;
     }
 
-    /**
-     * Kreiraj order i počni plaćanje
-     */
+    @PostMapping("/initiate")
+    public ResponseEntity<?> initiateCheckout(@RequestBody InitiateRequest request) {
+        try {
+            CartItem item = new CartItem(request.carId(), 0, request.rentalDays());
+            Order order = orderService.createOrder(List.of(item), request.userId());
+
+            return ResponseEntity.ok(Map.of("checkoutToken", order.getCheckoutToken()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Error during initialization" + e.getMessage());
+        }
+    }
+
     @PostMapping("/checkout")
     public ResponseEntity<?> checkout(
-            @RequestBody CheckoutRequest request) {
+            @RequestBody SecureCheckoutRequest request) {
         try {
             // 1. Kreiraj order u Web Shop-u
-            Order order = orderService.createOrder(request.items(),request.userId());
+            Order order = orderService.getOrderByCheckoutToken(request.checkoutToken());
 
-            // 2. Preusmerige korisnika na PSP za plaćanje
-            PaymentInitiationRequest pspRequest = new PaymentInitiationRequest(
-                    order.getId(),
-                    order.getTotalAmount(),
-                    "EUR",
-                    request.paymentMethod(),
-                    "http://localhost:8080/api/v1/orders/" + order.getId() + "/payment-callback",
-                    Map.of("orderId", String.valueOf(order.getId()),"userId",String.valueOf(request.userId()))
-            );
+            String merchantId = "TEST_MERCHANT";
+            String merchantPassword = "test";
+
+            Map<String, Object> pspRequest = new HashMap<>();
+            pspRequest.put("merchantId", merchantId);
+            pspRequest.put("merchantPassword", merchantPassword);
+            pspRequest.put("amount", order.getTotalAmount());
+            pspRequest.put("currency", "EUR");
+            pspRequest.put("merchantOrderId", String.valueOf(order.getId()));
+            pspRequest.put("merchantTimeStamp", Instant.now().toString());
+            pspRequest.put("successUrl", "https://localhost:4200/payment-success");
+            pspRequest.put("failedUrl", "https://localhost:4200/payment-failed");
+            pspRequest.put("errorUrl", "https://localhost:4200/payment-error");
+            pspRequest.put("paymentMethod", request.paymentMethod());
+
 
             // 3. Pošalji zahtev PSP-u
             ResponseEntity<PaymentResponse> pspResponse = restTemplate.postForEntity(
-                    PSP_BASE_URL + "/webshop/"+WEB_SHOP_ID+"/pay",  // webShopId = 1
+                    PSP_BASE_URL + "/webshop/"+WEB_SHOP_ID+"/pay",
                     pspRequest,
                     PaymentResponse.class
             );
@@ -81,9 +106,6 @@ public class OrderController {
         }
     }
 
-    /**
-     * PSP vraća rezultat plaćanja na ovaj callback
-     */
     @PostMapping("/{orderId}/payment-callback")
     public ResponseEntity<?> paymentCallback(
             @PathVariable int orderId,
@@ -118,9 +140,7 @@ public class OrderController {
             ));
         }
     }
-    /**
-     * Preuzmi order po ID-u
-     */
+
     @GetMapping("/{orderId}")
     public ResponseEntity<?> getOrder(@PathVariable int orderId) {
         try {
@@ -136,9 +156,6 @@ public class OrderController {
         }
     }
 
-    /**
-     * Preuzmi sve ordere
-     */
     @GetMapping
     public ResponseEntity<List<Order>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAllOrders());
@@ -148,7 +165,8 @@ public class OrderController {
 record CheckoutRequest(
         List<CartItem> items,
         int userId,
-        PaymentMethodType paymentMethod
+        PaymentMethodType paymentMethod,
+        String checkoutToken
 ) {
 }
 record PaymentCallbackRequest(
@@ -156,3 +174,21 @@ record PaymentCallbackRequest(
         String transactionId,
         String errorMessage
 ) {}
+
+record RentRequest(
+        int carId,
+        int userId,
+        String paymentMethod
+) {}
+
+record InitiateRequest(
+        int carId,
+        int userId,
+        int rentalDays
+) {}
+
+record SecureCheckoutRequest(
+        String checkoutToken,
+        String paymentMethod
+) {}
+

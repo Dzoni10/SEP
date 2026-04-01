@@ -34,7 +34,6 @@ export class CardPaymentFormComponent implements OnInit {
   ngOnInit(): void {
     this.paymentId = this.route.snapshot.paramMap.get('paymentId') || '';
     
-    // Uzmi amount i currency iz query params (ako postoje)
     const amountParam = this.route.snapshot.queryParamMap.get('amount');
     const currencyParam = this.route.snapshot.queryParamMap.get('currency');
     
@@ -95,9 +94,9 @@ export class CardPaymentFormComponent implements OnInit {
           } else {
             // Fallback ako nema redirectUrl
             const successUrl = this.route.snapshot.queryParamMap.get('successUrl') || 
-                             'http://localhost:4200/payment-success';
+                             'https://localhost:4200/payment-success';
             const failedUrl = this.route.snapshot.queryParamMap.get('failedUrl') || 
-                            'http://localhost:4200/payment-failed';
+                            'https://localhost:4200/payment-failed';
             if (response.success) {
               window.location.href = successUrl + '?transactionId=' + (response.globalTransactionId || '');
             } else {
@@ -117,7 +116,7 @@ export class CardPaymentFormComponent implements OnInit {
           } else {
             // Fallback - redirect na error URL
             const errorUrl = this.route.snapshot.queryParamMap.get('errorUrl') || 
-                            'http://localhost:4200/payment-error';
+                            'https://localhost:4200/payment-error';
             setTimeout(() => {
               window.location.href = errorUrl + '?error=' + encodeURIComponent(errorMessage);
             }, 2000);

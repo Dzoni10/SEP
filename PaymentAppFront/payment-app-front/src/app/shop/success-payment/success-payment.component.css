@@ -1,0 +1,85 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+}
+
+.success-card {
+  text-align: center;
+  padding: 40px;
+  border-radius: 20px;
+  width: 400px;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.icon-wrapper {
+  margin-bottom: 20px;
+}
+
+.checkmark-circle {
+  width: 100px;
+  height: 100px;
+  background: #4caf50;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  animation: scaleUp 0.5s ease;
+}
+
+.checkmark {
+  color: white;
+  font-size: 50px;
+  animation: pop 0.4s ease;
+}
+
+h1 {
+  color: #2e7d32;
+  margin-top: 10px;
+}
+
+p {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.actions {
+  margin-top: 20px;
+}
+
+/* Animations */
+
+@keyframes scaleUp {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0);
+  }
+  80% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

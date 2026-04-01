@@ -1,0 +1,53 @@
+<div class="payment-wrapper">
+  <mat-card class="modern-card">
+    
+    <mat-card-header class="header-center">
+      <mat-card-title class="title">Payment details</mat-card-title>
+      <mat-card-subtitle class="amount" *ngIf="transactionData">
+        To payment: {{ transactionData.amount | number:'1.2-2' }} {{ transactionData.currency }}
+      </mat-card-subtitle>
+      <mat-spinner *ngIf="!transactionData" diameter="30"></mat-spinner>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()" class="form-container">
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Name and surname on card</mat-label>
+          <input matInput formControlName="cardHolderName" placeholder="Exp. Petar Petrovic">
+          <mat-icon matSuffix>person</mat-icon>
+          <mat-error *ngIf="paymentForm.get('cardHolderName')?.hasError('required')">Name is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Card number (PAN)</mat-label>
+          <input matInput formControlName="pan" placeholder="xxxx xxxx xxxx xxxx" maxlength="16">
+          <mat-icon matSuffix>credit_card</mat-icon>
+          <mat-error *ngIf="paymentForm.get('pan')?.invalid">Invalid card number</mat-error>
+        </mat-form-field>
+
+        <div class="row-container">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Expiration date</mat-label>
+            <input matInput formControlName="expirationDate" placeholder="MM/YY" maxlength="5">
+            <mat-icon matSuffix>calendar_today</mat-icon>
+            <mat-error *ngIf="paymentForm.get('expirationDate')?.invalid">Format must be MM/YY</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>CVV</mat-label>
+            <input matInput type="password" formControlName="securityCode" placeholder="1234" maxlength="4">
+            <mat-icon matSuffix>lock</mat-icon>
+            <mat-error *ngIf="paymentForm.get('securityCode')?.invalid">Invalid CVV</mat-error>
+          </mat-form-field>
+        </div>
+
+        <button mat-raised-button color="primary" type="submit" class="submit-btn" [disabled]="isLoading || !transactionData">
+          <span *ngIf="!isLoading">PAY</span>
+          <mat-spinner *ngIf="isLoading" diameter="24" color="accent"></mat-spinner>
+        </button>
+      </form>
+    </mat-card-content>
+
+  </mat-card>
+</div>

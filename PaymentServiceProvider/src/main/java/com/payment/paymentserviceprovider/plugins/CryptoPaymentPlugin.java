@@ -2,15 +2,25 @@ package com.payment.paymentserviceprovider.plugins;
 
 import com.payment.paymentserviceprovider.domain.*;
 import com.payment.paymentserviceprovider.exception.PaymentPluginException;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 import java.util.Map;
 
 @Component
 public class CryptoPaymentPlugin implements PaymentPlugin {
 
+
+    private final RestTemplate restTemplate;
+
+    public CryptoPaymentPlugin(@Qualifier("publicRestTemplate") RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @Override
     public String getPluginId() { return "crypto-plugin"; }
@@ -20,10 +30,10 @@ public class CryptoPaymentPlugin implements PaymentPlugin {
         return PaymentMethodType.CRYPTO;
     }
 
-    // Implementacija za crypto...
+// Implementacija za crypto...
     @Override
     public void initialize(Map<String, String> config) throws PaymentPluginException {
-        // Inicijalizacija crypto provider (npr. Coinbase)
+// Inicijalizacija crypto provider (npr. Coinbase)
     }
 
     @Override
@@ -34,8 +44,8 @@ public class CryptoPaymentPlugin implements PaymentPlugin {
     @Override
     public PaymentResult processPayment(PaymentRequest request)
             throws PaymentPluginException {
-        // Crypto logika
-        return new PaymentResult(true, "crypto_txn_456", "https://payment.crypto", null);
+// Crypto logika
+        return new PaymentResult(true, "crypto_txn_456", "https://payment.crypto", null,null);
     }
 
     @Override

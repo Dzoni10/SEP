@@ -1,0 +1,38 @@
+<div class="admin-container">
+  <mat-card class="admin-card">
+    
+    <mat-card-header>
+      <div mat-card-avatar class="admin-avatar">
+        <mat-icon>admin_panel_settings</mat-icon>
+      </div>
+      <mat-card-title>Payment setting</mat-card-title>
+      <mat-card-subtitle>Choose which payment methods support your shop</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content class="methods-content">
+      <form>
+      <div class="method-row" *ngFor="let method of paymentMethods; let i = index">
+        <div class="method-info">
+          <mat-icon color="primary">{{ method.icon }}</mat-icon>
+          <span class="method-name">{{ method.name }}</span>
+        </div>
+        
+        <mat-slide-toggle color="primary" [(ngModel)]="method.selected" name="method-{{i}}">
+          {{ method.selected ? 'Enable' : 'Disable' }}
+        </mat-slide-toggle>
+      </div>
+      </form>
+
+    </mat-card-content>
+
+    <mat-card-actions class="actions-container">
+      <button mat-raised-button color="primary" class="save-btn" (click)="saveConfiguration()" [disabled]="isLoading">
+        <mat-icon *ngIf="!isLoading">save</mat-icon>
+        <mat-spinner *ngIf="isLoading" diameter="20" class="spinner"></mat-spinner>
+        <span *ngIf="!isLoading">Save changes</span>
+        <span *ngIf="isLoading">Saving...</span>
+      </button>
+    </mat-card-actions>
+    
+  </mat-card>
+</div>

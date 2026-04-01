@@ -1,0 +1,29 @@
+<div class="bank-container" *ngIf="paymentId">
+  
+  <div class="bank-header">
+    <h2>Secure Payment Gateway</h2>
+    <p>Odaberite način plaćanja</p>
+  </div>
+
+  <div class="payment-tabs">
+    <button (click)="selectMethod('card')" [class.active]="selectedMethod === 'card'">
+      Platna kartica
+    </button>
+    <button (click)="selectMethod('qr')" [class.active]="selectedMethod === 'qr'">
+      Skeniraj IPS QR
+    </button>
+  </div>
+
+  <div class="payment-content" *ngIf="selectedMethod === 'card'">
+    <app-card-payment [paymentId]="paymentId"></app-card-payment>
+  </div>
+
+  <div class="payment-content" *ngIf="selectedMethod === 'qr'">
+    <app-qr-payment [paymentId]="paymentId"></app-qr-payment>
+  </div>
+
+</div>
+
+<div *ngIf="!paymentId">
+  <h2>Greška: Nevalidan link za plaćanje.</h2>
+</div>

@@ -10,4 +10,5 @@ export interface Car {
   year: number;
   rentPrice: number;
   picture:string;
+  selectedDays?: number;
 }

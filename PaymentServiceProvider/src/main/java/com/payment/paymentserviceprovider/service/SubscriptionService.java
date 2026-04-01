@@ -28,7 +28,6 @@ public class SubscriptionService {
                                           List<PaymentMethodType> methods)
             throws PaymentPluginException {
 
-        // Validacija - sve metode moraju biti dostupne
         for (PaymentMethodType method : methods) {
             pluginRegistry.getPlugin(method);
         }
@@ -51,7 +50,6 @@ public class SubscriptionService {
 
         subscriptionRepo.save(updated);
     }
-
 
     @Transactional
     public void unsubscribeFromPaymentMethod(int webShopId,
@@ -80,9 +78,7 @@ public class SubscriptionService {
         subscriptionRepo.save(newSub);
     }
 
-    /**
-     * Preuzimanje dostupnih metoda za web shop
-     */
+    @Transactional
     public List<PaymentMethodType> getAvailableMethodsForWebShop(int webShopId)
             throws PaymentPluginException {
 
@@ -92,8 +88,7 @@ public class SubscriptionService {
         if (!subscription.isActive()) {
             throw new PaymentPluginException("Subscription is not active");
         }
-
-        return subscription.getSubscribedMethods();
+        return new ArrayList<>(subscription.getSubscribedMethods());
     }
 
 }

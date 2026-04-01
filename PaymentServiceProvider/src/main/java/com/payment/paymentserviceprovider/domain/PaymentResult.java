@@ -4,6 +4,7 @@ public record PaymentResult(
         boolean success,
         String externalTransactionId,
         String redirectUrl,
-        String errorMessage
+        String errorMessage,
+        String stan
 ) {
 }

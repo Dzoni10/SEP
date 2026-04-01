@@ -23,10 +23,9 @@ public class BankApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry){
 				registry.addMapping("/api/**")
-						.allowedOrigins("http://localhost:4400")
+						.allowedOrigins("http://localhost:4400","https://localhost:4400")
 						.allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
-						.allowedHeaders("Authorization", "Content-Type")
-						.exposedHeaders("Authorization")
+						.allowedHeaders("*")
 						.allowCredentials(true);
 			}
 		};

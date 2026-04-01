@@ -6,16 +6,17 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name="transaction")
+
 public class Transaction{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true,nullable = false)
+    @Column(nullable = false)
     private int webShopId;
 
-    @Column(unique = true,nullable = false)
+    @Column(nullable = false)
     private int orderId;
 
     @Column(nullable = false)
@@ -36,15 +37,30 @@ public class Transaction{
     @Column(nullable = false)
     private LocalDate createdAt;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private LocalDate completedAt;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String errorMessage;
+
+    @Column(name="stan", unique = true)
+    private String stan;
+
+    @Column(name="global_transaction_id")
+    private String globalTransactionId;
+
+    @Column(name="success_url")
+    private String successUrl;
+
+    @Column(name="failed_url")
+    private String failedUrl;
+
+    @Column(name="error_url")
+    private String errorUrl;
 
     public Transaction() {}
 
-    public Transaction(Integer id, int webShopId, int orderId, PaymentMethodType method, double amount, String currency, TransactionStatus status, String externalTransactionId, LocalDate createdAt, LocalDate completedAt, String errorMessage) {
+    public Transaction(Integer id, int webShopId, int orderId, PaymentMethodType method, double amount, String currency, TransactionStatus status, String externalTransactionId, LocalDate createdAt, LocalDate completedAt, String errorMessage, String successUrl,String failedUrl, String errorUrl) {
         this.id = id;
         this.webShopId = webShopId;
         this.orderId = orderId;
@@ -56,9 +72,12 @@ public class Transaction{
         this.createdAt = createdAt;
         this.completedAt = completedAt;
         this.errorMessage = errorMessage;
+        this.successUrl = successUrl;
+        this.failedUrl = failedUrl;
+        this.errorUrl = errorUrl;
     }
 
-    public Transaction(int webShopId, int orderId, PaymentMethodType method, double amount, String currency, TransactionStatus status, String externalTransactionId, LocalDate createdAt, LocalDate completedAt, String errorMessage){
+    public Transaction(int webShopId, int orderId, PaymentMethodType method, double amount, String currency, TransactionStatus status, String externalTransactionId, LocalDate createdAt, LocalDate completedAt, String errorMessage, String successUrl,String failedUrl, String errorUrl) {
         this.webShopId = webShopId;
         this.orderId = orderId;
         this.method = method;
@@ -69,6 +88,9 @@ public class Transaction{
         this.createdAt = createdAt;
         this.completedAt = completedAt;
         this.errorMessage = errorMessage;
+        this.successUrl = successUrl;
+        this.failedUrl = failedUrl;
+        this.errorUrl = errorUrl;
     }
 
     public Integer getId() {
@@ -157,5 +179,46 @@ public class Transaction{
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public String getStan(){
+        return stan;
+    }
+
+    public void setStan(String stan){
+        this.stan=stan;
+    }
+
+    public String getGlobalTransactionId(){
+        return globalTransactionId;
+    }
+
+    public void setGlobalTransactionId(String globalTransactionId){
+        this.globalTransactionId = globalTransactionId;
+    }
+
+    public String getSuccessUrl(){
+        return  successUrl;
+    }
+
+    public void setSuccessUrl(String successUrl)
+    {
+        this.successUrl=successUrl;
+    }
+
+    public String getFailedUrl(){
+        return failedUrl;
+    }
+
+    public void setFailedUrl(String failedUrl){
+        this.failedUrl=failedUrl;
+    }
+
+    public String getErrorUrl(){
+        return errorUrl;
+    }
+
+    public void setErrorUrl(String errorUrl){
+        this.errorUrl=errorUrl;
     }
 }

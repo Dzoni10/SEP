@@ -1,0 +1,67 @@
+.payment-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background-color: #f5f7fa; /* Suptilna pozadina cele stranice */
+}
+
+.modern-card {
+  width: 100%;
+  max-width: 450px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 24px 16px;
+}
+
+.header-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 500;
+  color: #333;
+}
+
+.amount {
+  font-size: 28px !important;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-top: 8px;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.row-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.half-width {
+  width: 48%;
+}
+
+.submit-btn {
+  height: 48px;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border-radius: 8px;
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
