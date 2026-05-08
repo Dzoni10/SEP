@@ -59,6 +59,11 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "ssl": true,
+            "sslKey": "ssl/localhost_bank-key.pem",
+            "sslCert": "ssl/localhost_bank.pem"
+          },
           "configurations": {
             "production": {
               "browserTarget": "bank-front:build:production"

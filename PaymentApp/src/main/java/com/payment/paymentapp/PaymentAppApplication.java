@@ -23,7 +23,7 @@ public class PaymentAppApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry){
 				registry.addMapping("/api/**")
-						.allowedOrigins("http://localhost:4200")
+						.allowedOrigins("http://localhost:4200","http://localhost:4300","https://localhost:4200","https://localhost:4300")
 						.allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
 						.allowedHeaders("Authorization", "Content-Type")
 						.exposedHeaders("Authorization")

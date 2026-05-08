@@ -71,7 +71,7 @@ public class UserController {
 
             verificationTokenService.save(verificationToken);
 
-            String activationLink = "http://localhost:8080/api/users/verify?token=" + token;
+            String activationLink = "https://localhost:8080/api/users/verify?token=" + token;
             emailService.sendVerificationEmail(userDTO, activationLink);
             return new ResponseEntity<>("User successefully created", HttpStatus.CREATED);
 

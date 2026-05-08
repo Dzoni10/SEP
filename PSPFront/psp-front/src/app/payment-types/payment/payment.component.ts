@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { PaymentTypesService } from '../payment-types.service';
+import { PaymentInitiationRequest } from '../model/PaymentInitRequest';
 
 @Component({
   selector: 'app-payment',
@@ -10,49 +12,55 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class PaymentComponent  implements OnInit{
 
   carId: number | null = null;
-  userId: number | null = null;
-  redirectUrl: string | null = null;
+  userId: number | null=null;
+  rentalDays: number | null=null;
+  token: string | null=null;
 
-  constructor(private route: ActivatedRoute,private snackBar:MatSnackBar){}
+  availableMethods: string[] = [];
+
+  constructor(private route: ActivatedRoute,private snackBar:MatSnackBar, private paymentService:PaymentTypesService){}
 
   ngOnInit(): void {
-    // Uzimamo podatke iz URL-a koje je poslala prva aplikacija
-    const carIdParam = this.route.snapshot.queryParamMap.get('carId');
-    const userIdParam = this.route.snapshot.queryParamMap.get('userId');
-    this.redirectUrl = this.route.snapshot.queryParamMap.get('redirectUrl');
+   
+    const tokenParam = this.route.snapshot.queryParamMap.get('token');
+    if(tokenParam) this.token = tokenParam;
+    this.loadAvailableMethods(1);
+  }
 
-    if (carIdParam) {
-      this.carId = +carIdParam; // '+' pretvara string "1" u broj 1
-    }
-
-    if (userIdParam) {
-      this.userId = Number(userIdParam); // Drugi način konverzije
-    }
-    
-    console.log('Rent payment:', this.carId, 'User:', this.userId, 'Redirect URL:', this.redirectUrl);
+  loadAvailableMethods(webShopId: number) {
+    this.paymentService.getAvailableMethods(webShopId).subscribe({
+      next: (methods) => {
+        // Pretvaramo sve u velika slova radi lakšeg upoređivanja (npr. "CARD", "QR")
+        this.availableMethods = methods.map(m => m.toUpperCase());
+      },
+      error: (err) => {
+        console.error("Failed to load methods", err);
+      }
+    });
   }
 
   selectPayment(method: string) {
-    if (method === 'card') {
-      // Za card payment, treba da dobijemo paymentId iz URL-a ili query params
-      // Za sada ćemo koristiti query params sa redirectUrl koji dolazi iz Web Shop-a
-      const redirectUrl = this.route.snapshot.queryParamMap.get('redirectUrl');
-      if (redirectUrl) {
-        // Ako postoji redirectUrl, preusmeri direktno na njega
-        window.location.href = redirectUrl;
-      } else {
-        this.snackBar.open('Redirect URL not found', "Close", {
-          duration: 3000,
-          horizontalPosition: "center"
-        });
-      }
-    } else {
-      // Za ostale metode plaćanja (QR, Crypto, PayPal)
-      this.snackBar.open(`Payment method ${method.toUpperCase()} will be available soon`, "Close", {
-        duration: 4000,
-        horizontalPosition: "center"
-      });
-    }
-  }
 
+    const paymentToken = Math.random().toString(36).substring(2) + Date.now().toString(36);
+    
+    sessionStorage.setItem('paymentSession', paymentToken);
+
+    if(!this.token){
+      this.snackBar.open("Error: invalid payment session", "Close",{duration:3000});
+      return;
+    }
+
+    this.paymentService.initiateSecurePayment(this.token,method.toUpperCase()).subscribe({
+      next: (response) => {
+        if (response.status==='success' && response.redirectUrl) {
+           window.location.href = response.redirectUrl; 
+        } else {
+          this.snackBar.open('Error: ' + (response.errorMessage || 'Payment denied'), "Close", { duration: 3000 });
+        }
+      },
+      error: (err) => {
+        this.snackBar.open('Server error during payment init.', "Close", { duration: 3000 });
+      }
+    });
+  }
 }

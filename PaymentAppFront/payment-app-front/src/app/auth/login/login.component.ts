@@ -64,6 +64,13 @@ login(): void {
           });
           this.loginForm.reset();
           const user = this.authService.getCurrentUser();
+
+          if (user?.role === 'ADMIN') {
+            this.router.navigate(['/panel']);
+          } else {
+            this.router.navigate(['/webshop']);
+          }
+
         },
         error: (err) => {
           let message = '';

@@ -1,0 +1,32 @@
+<div class="payment-wrapper">
+  <mat-card class="modern-card qr-card">
+    
+    <mat-card-header class="header-center">
+      <mat-card-title class="title">IPS Scaning</mat-card-title>
+      <mat-card-subtitle class="amount" *ngIf="transactionData">
+        {{ transactionData.amount | number:'1.2-2' }} {{ transactionData.currency }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class="qr-content">
+      <p class="instruction">Scan QR code with mBanking app to contionue payment</p>
+      
+      <div class="qr-box" *ngIf="qrData">
+        <!-- <qrcode [qrdata]="qrString" [width]="220" [errorCorrectionLevel]="'M'"></qrcode> -->
+        <img [src]="'data:image/png;base64,' + qrData.base64Image" alt="NBS IPS QR Code" style="width: 220px; height: 220px;">
+      </div>
+      <mat-spinner *ngIf="!qrData" diameter="40"></mat-spinner>
+
+      <div class="divider">
+        <span>or testing purpose</span>
+      </div>
+
+      <button mat-stroked-button color="accent" class="simulate-btn" (click)="simulateScan()" [disabled]="isProcessing || !qrData">
+        <mat-icon>qr_code_scanner</mat-icon>
+        <span *ngIf="!isProcessing">Simulate success scanning</span>
+        <mat-spinner *ngIf="isProcessing" diameter="20" color="accent"></mat-spinner>
+      </button>
+
+    </mat-card-content>
+  </mat-card>
+</div>

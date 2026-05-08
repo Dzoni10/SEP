@@ -14,7 +14,8 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<DecodedToken | null>(this.loadUserFromToken());
   currentUser$ = this.currentUserSubject.asObservable();
 
-  private apiUrl = 'http://localhost:8080/api/users';
+  private apiUrl = 'https://localhost:8080/api/users';
+  private adminUrl = 'https://localhost:8080/api/admin/payment-methods';
 
   constructor(private http: HttpClient) { }
 
@@ -25,6 +26,15 @@ export class AuthService {
   login(email: string, password: string):  Observable<AuthResponse>{
     const body = {email, password};
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`,body)
+  }
+
+  subscribeToPaymentMethods(methods: string[]): Observable<any> {
+    const request = { methods: methods, headers:this.getAuthHeaders() };
+    return this.http.post(`${this.adminUrl}/subscribe`, request, { responseType: 'text' });
+  }
+
+  getSavedPaymentMethods(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.adminUrl}/current`, { headers: this.getAuthHeaders() });
   }
 
   getAuthHeaders(): HttpHeaders {

@@ -16,14 +16,13 @@ public class PaymentServiceProviderApplication {
     public static void main(String[] args) {
         SpringApplication.run(PaymentServiceProviderApplication.class, args);
     }
-
     @Bean
     public WebMvcConfigurer corsConfigurer(){
         return new WebMvcConfigurer(){
             @Override
             public void addCorsMappings(CorsRegistry registry){
                 registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:4300")
+                        .allowedOrigins("http://localhost:4300","https://localhost:4300")
                         .allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
                         .allowedHeaders("Authorization", "Content-Type")
                         .exposedHeaders("Authorization")

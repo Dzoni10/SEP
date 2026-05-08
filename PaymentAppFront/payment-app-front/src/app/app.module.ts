@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -12,6 +12,9 @@ import { AuthModule } from './auth/auth.module';
 import { AuthInterceptor } from './auth/interceptor-jwt/jwt-interceptor';
 import { ShopModule } from './shop/shop.module';
 import { MatDialogModule } from '@angular/material/dialog';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -21,13 +24,17 @@ import { MatDialogModule } from '@angular/material/dialog';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NoopAnimationsModule,
+    ReactiveFormsModule,
     CommonModule,
     RouterModule,
     HttpClientModule,
     AuthModule,
     ShopModule,
-    MatDialogModule
+    MatDialogModule,
+    FormsModule,
+    MatSlideToggleModule,
+    BrowserAnimationsModule,
+    MatIconModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi:true}

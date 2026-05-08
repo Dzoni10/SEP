@@ -24,7 +24,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-// Rute koje su javne i ne zahtevaju JWT
         if (path.startsWith("/api/users/signup") ||
                 path.startsWith("/api/users/login") ||
                 path.startsWith("/api/users/verify") ||
@@ -62,11 +61,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(
                                 userId, null, authorities);
 
-                // Dodaj detalje zahteva
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
                 System.out.println("JWT Authentication successful for user: " + userId + ", role: " + role);
 
             }catch (Exception e) {
@@ -76,10 +73,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
         } else {
-            // Nema Authorization header - pusti Spring Security da odluči
             System.out.println("No Authorization header for path: " + path);
         }
-
         filterChain.doFilter(request, response);
     }
 }

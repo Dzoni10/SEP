@@ -1,0 +1,80 @@
+/* Kontejner koji centrira sve i daje oblik kartice */
+.bank-container {
+  max-width: 480px;
+  margin: 60px auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border: 1px solid #eaeaea;
+}
+
+/* Plavo zaglavlje banke */
+.bank-header {
+  background: linear-gradient(135deg, #1976d2 0%, #115293 100%);
+  color: white;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.bank-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.bank-header p {
+  margin: 0;
+  font-size: 15px;
+  opacity: 0.9;
+}
+
+/* Tabovi za biranje metode (Card / QR) */
+.payment-tabs {
+  display: flex;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.payment-tabs button {
+  flex: 1;
+  padding: 18px;
+  border: none;
+  background: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: #6c757d;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 3px solid transparent;
+  outline: none;
+}
+
+.payment-tabs button:hover {
+  background-color: #f1f3f5;
+  color: #1976d2;
+}
+
+/* Aktivni tab */
+.payment-tabs button.active {
+  color: #1976d2;
+  border-bottom: 3px solid #1976d2;
+  background-color: white;
+}
+
+/* Kontejner gde se iscrtava tvoja forma */
+.payment-content {
+  padding: 30px;
+  background-color: white;
+  min-height: 300px;
+}
+
+/* Prikaz kada link nije validan */
+.error-container {
+  text-align: center;
+  margin-top: 100px;
+  color: #d32f2f;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

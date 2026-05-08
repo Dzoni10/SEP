@@ -13,10 +13,20 @@
       <p>🚗 Type: {{ car.type }}</p>
       <p>📅 Year: {{car.year}}</p>
       <h3 class="price">{{ car.rentPrice }} € / day</h3>
+
+      <mat-form-field appearance="outline" class="days-input">
+        <mat-label>Rental days(1-15 days)</mat-label>
+        <input matInput type="number" min="1" max="15" [(ngModel)]="car.selectedDays" [ngModelOptions]="{standalone: true}">
+      </mat-form-field>
+
+      <h4 *ngIf="car.selectedDays" class="total-price">
+        Total: {{ car.rentPrice * car.selectedDays }} €
+      </h4>
+
     </mat-card-content>
 
     <mat-card-actions>
-      <button mat-raised-button color="primary" (click)="rent(car.id)">
+      <button mat-raised-button color="primary" (click)="rent(car)" [disabled]="!car.selectedDays || car.selectedDays<1 || car.selectedDays>15">
         Rent
       </button>
     </mat-card-actions>
