@@ -48,8 +48,7 @@ public class RestTemplateConfig {
         requestFactory.setReadTimeout(10000);
         return new RestTemplate(requestFactory);
     }
-
-    // OVO JE NOVI REST TEMPLATE (ZA JAVNI INTERNET - CoinGate, PayPal)
+    
     @Bean(name = "publicRestTemplate")
     public RestTemplate publicRestTemplate() {
         return new RestTemplate();
