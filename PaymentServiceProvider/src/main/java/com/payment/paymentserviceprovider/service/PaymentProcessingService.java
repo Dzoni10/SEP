@@ -169,4 +169,24 @@ public class PaymentProcessingService {
         }
         return transaction;
     }
+
+    @Transactional
+    public void handleCoinGateCallback(String externalId, String status) {
+        Transaction transaction = transactionRepository.findByExternalTransactionId(externalId)
+                .orElseThrow(() -> new RuntimeException("Transaction not found: " + externalId));
+
+        if ("paid".equalsIgnoreCase(status)) {
+            transaction.setStatus(TransactionStatus.SUCCESS);
+            transaction.setCompletedAt(LocalDate.now());
+            transactionRepository.save(transaction);
+            notifyWebShop(transaction);
+
+        } else if (List.of("canceled", "expired", "invalid").contains(status.toLowerCase())) {
+            transaction.setStatus(TransactionStatus.FAILED);
+            transaction.setErrorMessage("Crypto payment failed " + status);
+            transaction.setCompletedAt(LocalDate.now());
+            transactionRepository.save(transaction);
+            notifyWebShop(transaction);
+        }
+    }
 }

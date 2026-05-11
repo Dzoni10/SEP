@@ -2,7 +2,7 @@
   <h1 class="title">Choose payment method</h1>
   
   <div class="payment-grid">
-    <mat-card class="payment-card" (click)="selectPayment('card')" *ngIf="availableMethods.includes('CARD')">
+    <mat-card class="payment-card" (click)="selectPayment('card')" *ngIf="availableMethods.includes('CARD') || availableMethods.includes('QR')">
       <mat-card-header>
         <mat-icon mat-card-avatar>credit_card</mat-icon>
         <mat-card-title>Card payment (with QR Support)</mat-card-title>
@@ -12,7 +12,7 @@
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="payment-card" (click)="selectPayment('qr')" *ngIf="availableMethods.includes('QR')">
+    <!-- <mat-card class="payment-card" (click)="selectPayment('qr')" *ngIf="availableMethods.includes('QR')">
       <mat-card-header>
         <mat-icon mat-card-avatar>qr_code_2</mat-icon>
         <mat-card-title>QR code (IPS)</mat-card-title>
@@ -20,7 +20,7 @@
       <mat-card-content>
         <p>Scan QR code with bank application for payment.</p>
       </mat-card-content>
-    </mat-card>
+    </mat-card> -->
 
     <mat-card class="payment-card" (click)="selectPayment('crypto')" *ngIf="availableMethods.includes('CRYPTO')">
       <mat-card-header>

@@ -52,7 +52,7 @@ export class WebShopComponent implements OnInit {
   openImage(url: string) {
   this.dialog.open(ImageDialogComponent, {
     data: { url: url },
-    panelClass: 'custom-dialog-container' // Opciono za stilizaciju pozadine
+    panelClass: 'custom-dialog-container'
   });
   }
 }

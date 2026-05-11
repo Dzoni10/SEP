@@ -8,6 +8,7 @@ import com.payment.paymentserviceprovider.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/psp")
@@ -156,6 +158,21 @@ public class PSPController {
             headers.setLocation(URI.create("https://localhost:4200/payment-failed"));
         }
         return new ResponseEntity<>(headers, HttpStatus.FOUND);
+    }
+
+    @PostMapping(value = "/webhook/coingate",consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> handleCoingateWebhook(@RequestBody Map<String,Object> payload){
+        try{
+            String externalId = String.valueOf(payload.get("id"));
+            String status = String.valueOf(payload.get("status"));
+
+            System.out.println("CoingGate webhook ID: "+ externalId + " Status: " + status);
+            paymentService.handleCoinGateCallback(externalId, status);
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            System.err.println("Error during processing Webook: " + e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     private String calculateHmac(String data) throws Exception {
