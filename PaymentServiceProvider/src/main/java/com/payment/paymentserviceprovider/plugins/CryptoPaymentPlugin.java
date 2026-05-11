@@ -4,17 +4,29 @@ import com.payment.paymentserviceprovider.domain.*;
 import com.payment.paymentserviceprovider.exception.PaymentPluginException;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 
 import java.time.LocalDate;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Component
 public class CryptoPaymentPlugin implements PaymentPlugin {
 
+    @Value("${coingate.api.url}")
+    private String coingateApiUrl;
+
+    @Value("${coingate.api.token}")
+    private String apiToken;
 
     private final RestTemplate restTemplate;
 
@@ -30,22 +42,49 @@ public class CryptoPaymentPlugin implements PaymentPlugin {
         return PaymentMethodType.CRYPTO;
     }
 
-// Implementacija za crypto...
+
     @Override
-    public void initialize(Map<String, String> config) throws PaymentPluginException {
-// Inicijalizacija crypto provider (npr. Coinbase)
-    }
+    public void initialize(Map<String, String> config) throws PaymentPluginException {}
 
     @Override
     public boolean validateConfiguration(Map<String, String> config) {
-        return config.containsKey("crypto.api.key");
+        return true;
     }
 
     @Override
     public PaymentResult processPayment(PaymentRequest request)
             throws PaymentPluginException {
-// Crypto logika
-        return new PaymentResult(true, "crypto_txn_456", "https://payment.crypto", null,null);
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(apiToken);
+
+            String uniqueStan = UUID.randomUUID().toString();
+
+            Map<String, Object> body = new HashMap<>();
+            body.put("order_id", request.orderId() + "-" + System.currentTimeMillis());
+            body.put("price_amount", request.amount());
+            body.put("price_currency", request.currency());
+            body.put("receive_currency", request.currency());
+
+            body.put("success_url", request.successUrl() + "?token=" + uniqueStan);
+            body.put("cancel_url", request.failedUrl());
+            body.put("callback_url", "https://shoptalk-cinnamon-bust.ngrok-free.dev/api/v1/psp/webhook/coingate");
+
+
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+            ResponseEntity<Map> response = restTemplate.postForEntity(coingateApiUrl, entity, Map.class);
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                Map<String, String> respBody = response.getBody();
+                String paymentUrl = (String) respBody.get("payment_url");
+                String externalId = String.valueOf(respBody.get("id"));
+
+                return new PaymentResult(true, externalId, paymentUrl, null, uniqueStan);
+            }
+            return new PaymentResult(false, null, null, "Coin gate refused request", null);
+        } catch (Exception e) {
+            throw new PaymentPluginException( "Error with communication with CoinGate "+ e.getMessage());
+        }
     }
 
     @Override

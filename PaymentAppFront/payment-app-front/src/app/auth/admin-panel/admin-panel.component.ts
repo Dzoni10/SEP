@@ -45,29 +45,27 @@ export class AdminPanelComponent implements OnInit {
   saveConfiguration() {
     this.isLoading = true;
     
-    // Filtriramo samo one koji su 'selected: true' i uzimamo njihov 'id' (CARD, QR...)
     const selectedMethods = this.paymentMethods
       .filter(m => m.selected)
       .map(m => m.id);
 
     if (selectedMethods.length === 0) {
-      this.snackBar.open('Morate izabrati barem jedan način plaćanja!', 'Zatvori', { duration: 3000 });
+      this.snackBar.open('You must choose at least one payment method!', 'Close', { duration: 3000 });
       this.isLoading = false;
       return;
     }
 
-    // Šaljemo izabrane metode na beku
     this.authService.subscribeToPaymentMethods(selectedMethods).subscribe({
       next: (res) => {
         this.isLoading = false;
-        this.snackBar.open('Uspešno sačuvane metode plaćanja!', 'Zatvori', { 
+        this.snackBar.open('Success saved payment method', 'Close', { 
           duration: 3000,
-          panelClass: ['green-snackbar'] // Možeš dodati custom CSS klasu za zelenu boju
+          panelClass: ['green-snackbar']
         });
       },
       error: (err) => {
         this.isLoading = false;
-        this.snackBar.open('Greška pri čuvanju konfiguracije.', 'Zatvori', { duration: 3000 });
+        this.snackBar.open('Error during save configuration', 'Close', { duration: 3000 });
       }
     });
   }
