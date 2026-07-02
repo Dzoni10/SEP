@@ -15,6 +15,8 @@ import { SuccessPaymentComponent } from './success-payment/success-payment.compo
 import { FailedPaymentComponent } from './failed-payment/failed-payment.component';
 import { ErrorPaymentComponent } from './error-payment/error-payment.component';
 import { AppRoutingModule } from "src/app/app-routing.module";
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { HistoryComponent } from './history/history.component';
 
 
 
@@ -24,7 +26,8 @@ import { AppRoutingModule } from "src/app/app-routing.module";
     ImageDialogComponent,
     SuccessPaymentComponent,
     FailedPaymentComponent,
-    ErrorPaymentComponent
+    ErrorPaymentComponent,
+    HistoryComponent
   ],
   imports: [
     CommonModule,
@@ -38,7 +41,9 @@ import { AppRoutingModule } from "src/app/app-routing.module";
     MatSnackBarModule,
     MatDialogModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    MatCheckboxModule
+    
 ]
 })
 export class ShopModule { }

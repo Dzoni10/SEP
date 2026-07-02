@@ -61,8 +61,8 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "ssl": true,
-            "sslKey": "ssl/localhost-key-psp.pem",
-            "sslCert": "ssl/localhost_psp.pem"
+            "sslKey": "ssl/localhost_psp_back.key",
+            "sslCert": "ssl/localhost_psp_back.crt"
           },
           "configurations": {
             "production": {

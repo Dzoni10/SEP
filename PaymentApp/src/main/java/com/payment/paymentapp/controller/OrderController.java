@@ -44,7 +44,7 @@ public class OrderController {
     @PostMapping("/initiate")
     public ResponseEntity<?> initiateCheckout(@RequestBody InitiateRequest request) {
         try {
-            CartItem item = new CartItem(request.carId(), 0, request.rentalDays());
+            CartItem item = new CartItem(request.carId(), 0, request.rentalDays(),request.hasInsurance());
             Order order = orderService.createOrder(List.of(item), request.userId());
 
             return ResponseEntity.ok(Map.of("checkoutToken", order.getCheckoutToken()));
@@ -160,6 +160,18 @@ public class OrderController {
     public ResponseEntity<List<Order>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Order>> getUserOrders(@PathVariable int userId) {
+        try {
+            List<Order> userOrders = orderService.getOrdersByUserId(userId);
+            return ResponseEntity.ok(userOrders);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }
 
 record CheckoutRequest(
@@ -184,7 +196,8 @@ record RentRequest(
 record InitiateRequest(
         int carId,
         int userId,
-        int rentalDays
+        int rentalDays,
+        boolean hasInsurance
 ) {}
 
 record SecureCheckoutRequest(

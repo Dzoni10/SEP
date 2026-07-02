@@ -3,6 +3,7 @@
 
     <div class="navbar-buttons">
         <button mat-raised-button *ngIf="isLoggedIn()&&user?.role!=='ADMIN'" class="login-button" [routerLink]="['webshop']">Web Shop</button>
+        <button mat-raised-button *ngIf="isLoggedIn()&&user?.role!=='ADMIN'" class="login-button" [routerLink]="['history']">Rent history</button>
         <button mat-raised-button *ngIf="isLoggedIn()&&user?.role==='ADMIN'" class="login-button" [routerLink]="['panel']">Choose Payment Methods</button>
         <button mat-raised-button *ngIf="!isLoggedIn()" class="login-button" [routerLink]="['login']">Log in</button>
         <button mat-raised-button *ngIf="isLoggedIn()" class="logout-button" [routerLink]="['login']" (click)="logout()">Log out</button>

@@ -1,0 +1,28 @@
+<div class="history-container">
+  <h1 class="history-title">My Rental History</h1>
+
+  <div class="no-orders" *ngIf="orders.length === 0">
+    <p>You haven't rented any cars yet.</p>
+  </div>
+
+  <div class="cards-grid" *ngIf="orders.length > 0">
+    <mat-card class="history-card" *ngFor="let order of orders">
+      
+      <mat-card-header>
+        <mat-card-title>Order #{{ order.id }}</mat-card-title>
+        <mat-card-subtitle>Status: <span class="status-paid">{{ order.status }}</span></mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="item-details" *ngFor="let item of order.items">
+          <p>🚗 <strong>Car:</strong> {{ getCarDetails(item.carId) }}</p>
+          <p>📅 <strong>Rented for:</strong> {{ getRentalDays(item.carId, item.price) }} days</p>
+          <p>🛡️ <strong>Insurance:</strong> {{ checkInsurance(item.carId, item.price) }}</p>
+          <p>💰 <strong>Paid Price:</strong> {{ item.price | number:'1.1-1' }} €</p>
+          <hr *ngIf="order.items.length > 1">
+        </div>
+      </mat-card-content>
+
+    </mat-card>
+  </div>
+</div>

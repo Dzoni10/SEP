@@ -19,8 +19,14 @@
         <input matInput type="number" min="1" max="15" [(ngModel)]="car.selectedDays" [ngModelOptions]="{standalone: true}">
       </mat-form-field>
 
+      <div *ngIf="car.selectedDays" style="margin-bottom: 15px;">
+        <mat-checkbox [(ngModel)]="car.insuranceSelected">
+          Additional insurance (+10% total price)
+        </mat-checkbox>
+      </div>
+
       <h4 *ngIf="car.selectedDays" class="total-price">
-        Total: {{ car.rentPrice * car.selectedDays }} €
+        Total: {{ (car.insuranceSelected ? (car.rentPrice * car.selectedDays * 1.1) : (car.rentPrice * car.selectedDays)) | number:'1.1-1' }} €
       </h4>
 
     </mat-card-content>

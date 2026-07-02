@@ -11,4 +11,5 @@ export interface Car {
   rentPrice: number;
   picture:string;
   selectedDays?: number;
+  insuranceSelected?: boolean;
 }

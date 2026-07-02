@@ -8,6 +8,7 @@ import { SuccessPaymentComponent } from './shop/success-payment/success-payment.
 import { FailedPaymentComponent } from './shop/failed-payment/failed-payment.component';
 import { ErrorPaymentComponent } from './shop/error-payment/error-payment.component';
 import { PaymentGuard } from './auth/guard/payment.guard';
+import { HistoryComponent } from './shop/history/history.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'payment-success', component: SuccessPaymentComponent, canActivate:[PaymentGuard]},
   { path: 'payment-failed', component: FailedPaymentComponent, canActivate:[PaymentGuard]},
   { path: 'payment-error', component: ErrorPaymentComponent, canActivate:[PaymentGuard]},
+  { path: 'history', component: HistoryComponent}
   
 ];
 

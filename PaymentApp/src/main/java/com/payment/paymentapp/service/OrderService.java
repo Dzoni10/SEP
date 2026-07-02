@@ -40,6 +40,14 @@ public class OrderService {
 
             Car car = carRepositoryInterface.findById(item.carId()).orElseThrow(()-> new RuntimeException("Car not found"));
             double calculatedPrice = car.getRentPrice()*item.rentalDays();
+            if(item.hasInsurance()){
+                calculatedPrice = calculatedPrice + (calculatedPrice * 0.10);
+            }
+
+            java.math.BigDecimal bd = new java.math.BigDecimal(Double.toString(calculatedPrice));
+            bd = bd.setScale(1, java.math.RoundingMode.HALF_UP);
+            calculatedPrice = bd.doubleValue();
+
             orderItem.setPrice(calculatedPrice);
             order.getItems().add(orderItem);
             totalAmount+=calculatedPrice;
@@ -69,5 +77,13 @@ public class OrderService {
     public Order getOrderByCheckoutToken(String token) {
         return orderRepository.findByCheckoutToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid checkout token!"));
+    }
+
+    @Transactional
+    public List<Order> getOrdersByUserId(int userId) {
+        return orderRepository.findAll().stream()
+                .filter(order -> order.getItems() != null &&
+                        order.getItems().stream().anyMatch(item -> item.getUserId() == userId))
+                .toList();
     }
 }

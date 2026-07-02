@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ImageDialogComponent } from '../image-dialog/image-dialog.component';
 import { HttpClient } from '@angular/common/http';
 
+
 @Component({
   selector: 'app-webshsop',
   templateUrl: './webshop.component.html',
@@ -33,7 +34,8 @@ export class WebShopComponent implements OnInit {
     const request = {
       carId: car.id,
       userId: this.userId,
-      rentalDays: car.selectedDays
+      rentalDays: car.selectedDays,
+      hasInsurance: car.insuranceSelected || false
     }
 
     this.http.post<any>('https://localhost:8080/api/v1/orders/initiate',request,{headers:this.auth.getAuthHeaders()}).subscribe({

@@ -1,5 +1,6 @@
 package com.payment.paymentapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,6 +13,7 @@ public class OrderItem {
 
     @ManyToOne(optional = false)
     @JoinColumn(name="order_id")
+    @JsonIgnore
     private Order order;
 
     @Column(name = "user_id")
